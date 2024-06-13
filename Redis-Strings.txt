@@ -1,0 +1,30 @@
+**REDIS STRINGS
+--> Setting a String entry or String key-value pair in the redis db : set <key> <value>
+eg: set name Tamoziit --> set in the db as name: "Tamoziit"
+--> Getting a String data from Db : get <key> <value>
+eg: get name --> for above eg, gives back "Tamoziit"
+--> Getting a substring from an entry : getrange <key> <start index> <end index>
+eg: getrange email 0 5 --> returns 1st 6 chars of the value in email key
+--> Setting multiple key value pairs : mset <key1> <value1> <key2 <value2> .... <key_n> <value_n>
+eg: mset name Tamojit dev FullStack lang Javascript --> in db :
+name: "Tamojit"
+dev: "FullStack"
+lang: "Javascript"
+--> Getting multiple key value pairs : mget <key1> <key2> .... <key_n>
+eg: mget name dev lang
+--> Overwriting or editing an entry : set <key> <value>
+eg: for call 1: set name Tamojit
+    for call 2: set name Tamoziit --> value in set = "Tamoziit"
+--> Getting length of a string entry : strlen <key>
+--> Storing string with spaces : set goal "Learning Advanced backend, system design, architecture, DevOps & Redis" --> i.e, within quotes.
+--> Storing integers (as String) : set <key> <number>
+eg: set count 1 --> in db ; count: "1"
+--> Incrementing the integers : (i) incr <key> --> increments by 1
+eg: incr count --> gives back 2 (from prev. eg.)
+(ii) incrby <key> <value> --> increments the integer in key by amt. = value. eg: incrby count 10 --> gives 11 if initially, count: "1".
+(iii) incrbyFloat <key> <value> --> incrementing floating nos. by value amt.
+--> Decrementing integers : decr, decrby --> same application as incr, incrby
+--> Expiring or setting lifespan of an entry --> expire <key> <time in seconds> --> eg: expire a 10, will expire the value contained in a after 10 secs, i.e, after 10 secs, "get a" command will return (nil).
+NB: By default expiry time of a key is -1.
+NB: setex b 10 abc --> setex cmd sets key "b" with value "abc" for 10 secs, after whicch it will cease to exist.
+--> Checking time until expire of a key : ttl <key>

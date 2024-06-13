@@ -1,0 +1,19 @@
+**What is REDIS?
+-> In memory Data Structure store
+-> Used as a NoSQL Database
+-> Distributed Cache
+-> Message Broker
+
+**Data structures supported:
+- String
+- Hashes
+- List
+- Sets
+- Sorted Sets
+- Bitmaps
+- HyperLogLog
+- Geo Spatial Indexes
+
+**Basic Architecture
+Redis Client <---sends & receives Data from---> Redis Server
+(They can either be on the same system or remote systems.)
