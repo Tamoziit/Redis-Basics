@@ -1,0 +1,71 @@
+**REDIS-SETS : Similar to lists but holds only unique values unlike lists.
+
+--> sadd <key> <value> --> adds a value to a set.
+eg: sadd tech Java
+--> sadd <key> <val1> <val2> <val3> ... <val_n> --> Adds multiple values to the key of a set.
+eg: sadd tech redis node docker
+--> smembers <key> --> lists out all the values under the particular <key>
+eg: smembers tech --> wrt. prev. cmds gives -->
+    1) "node"
+    2) "redis"
+    3) "docker"
+    4) "Java"
+NB: if we try to execute --> sadd tech docker --> it returns 0 since, "docker" already exists in the set & set only has unique members. 
+--> scard <key> --> returns the length of the set.
+--> sismember <key> <value> --> To check if a particular <value> exists under the specified <key> in a set.
+eg: sismember tech Java --> returns 1 (ie, it exists wrt prev. set)
+    sismember tech AWS --> returns 0 (ie, wrt prev. set, AWS DNE in the set)
+--> sdiff <key1> <key2> --> Returns the elements under key1 not present under key2.
+eg: Consider 2 Sets
+    tech: 1) "redis" 
+          2) "docker"
+          3) "node"
+          4) "Java"
+    advancedBack: 1) "kubernetes"
+                  2) "redis"
+                  3) "docker"
+                  4) "jenkins"
+                  5) "AWS"
+    sdiff tech advancedBack gives -->
+    1) "node"
+    2) "Java", ie, the members of tech not present in advancedBack.
+    and, sdiff advancedBack tech gives -->
+    1) "kubernetes"
+    2) "jenkins"
+    3) "AWS", ie, the members of advancedBack not present in tech.
+--> sdiffstore <dest_set> <set1> <set2> --> stores the element of set1 not present in set2, inside a destination set (dest_set).
+eg: sdiffstore diff1 tech advancedBack --> diff1 will contain -->
+    1) "node"
+    2) "Java"
+    sdiffstore diff2 advancedBack tech --> diff2 will contain -->
+    1) "kubernetes"
+    2) "jenkins"
+    3) "AWS"
+--> sinter <set1> <set2> --> returns the intersection (common elements) b/w the 2 sets.
+eg: considering tech, advancedBack, diff1 & diff2 sets from prev. examples
+    sinter tech advancedBack gives --> 1) "redis"
+                                       2) "docker"
+    sinter tech advancedBack diff1, sinter tech advancedBack diff2 --> both gives empty result(set), since the 3 sets do not have any elements common to all 3 sets.
+--> sinterstore <dest_set> <set1> <set2> --> Stores the intersection of set1 & set2 in destination set.
+eg: sinterstore inter1 tech advanced --> inter1 hence stores -->
+    1) "redis"
+    2) "docker"
+--> sunion <set1> <set2> ... <setn> --> returns the union of "n" no. of sets.
+eg: sunion tech advancedBack inter1 diff2 gives -->
+    1) "kubernetes"
+    2) "redis"
+    3) "docker"
+    4) "node"
+    5) "jenkins"
+    6) "Java"
+    7) "AWS"
+--> sunionstore <dest_set> <key1> <key2> ... <keyn> --> Stores the union of "n" no. of sets in a destination set.
+eg: sunionstore store1 tech advancedBack inter1 diff2 -->
+hence, store1:
+        1) "kubernetes"
+        2) "redis"
+        3) "docker"
+        4) "node"
+        5) "jenkins"
+        6) "Java"
+        7) "AWS"
