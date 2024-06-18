@@ -1,0 +1,87 @@
+NB:
+keys * --> to get all the keys in a db
+flushall --> remove all the keys in redis db
+
+**REDIS LISTS
+--> pushing a data into a list from top --> lpush <key> <value>
+eg: lpush country India
+    lpush country USA
+    lpush country UK 
+    --> Stored in db as -->
+    1) "India"
+    2) "Canada"
+    3) "USA"
+--> Getting the elements in a list within a range --> lrange <key> <start> <end>
+eg: lrange country 0 -1 --> by default gives all the entries under country from the list
+    lrange country 0 1 --> gives 0th & 1th index element.
+--> pushing a data into a list at bottom --> rpush <key> <value>
+eg: rpush country Australia
+    From prev, the current state of the list now will be-->
+    1) "India"
+    2) "Canada"
+    3) "USA"
+    4) "Australia"
+--> getting length of a list --> llen <key>
+eg: llen country --> gives output = 4
+--> Remove/Pop element from top of a list --> lpop <key>
+eg: lpop country
+from prev. we get -->
+    1) "Canada"
+    2) "USA"
+    3) "Australia"
+--> Remove/Pop element from bottom of a list --> rpop <key>
+eg: rpop country
+from prev. we get -->
+    1) "Canada"
+    2) "USA"
+--> Change the value of an entry at a particular index in a list --> lset <key> <index> <new Value>
+eg: lset country 1 Spain
+if initially -->
+    1) "India"
+    2) "USA"
+    3) "Australia"
+then after lset -->
+    1) "India"
+    2) "Spain"
+    3) "Australia"
+--> Insert element relative to an entry in a list --> linsert <key> <before|after> <pivot value> <Value to be inserted.
+eg: If initially -->
+    1) "India"
+    2) "Spain"
+    3) "USA"
+    then after --> linsert country before Spain Argentina --> Inserts Argentina before Spain -->
+    1) "India"
+    2) "Argentina"
+    3) "Spain"
+    4) "USA"
+    & after --> linsert country after Spain Germany --> Inserts Germany after Spain --> 
+    1) "India"
+    2) "Argentina"
+    3) "Spain"
+    4) "Germany"
+    5) "USA"
+--> To get a value at a particular index --> lindex <key> <index>
+eg: lindex country 1 --> gives "Argentina" from prev. list
+    lindex country 18 --> gives nil since no element at 18th index exists.
+--> To push an element from top of a list IF AND ONLY IF, the list exists --> lpushx <key> <value>
+eg: lpushx country Portugal --> as country already exists acc. to prev.--> it gives --> 1) "Portugal"
+                 2) "India"
+                 3) "Argentina"
+                 4) "Spain"
+                 5) "Germany"
+                 6) "USA"
+    but lpushx movies Avengers returns 0 since movies list DNE acc. to the prev. eg.
+--> Similarly, To push an element from bottom of a list IF AND ONLY IF, the list exists --> rpushx <key> <value>
+
+##Sortings 
+--> sort <key> ALPHA --> sorts alphabetically (A-Z)
+--> sort <key> desc ALPHA --> sorts alphabetically in descending order ie, (Z-A).
+
+--> blpop <key> <timeout> --> Blocks all operations on that key (max upto the timeout time) until the pop operation is executed. If the list DNE, then it return nil after the timeout time is over.
+eg: if a movies list has -->
+    1) "Comicon"
+    2) "Avengers"
+    and we execute --> lpush movies Ultron, blpop movies 10
+    then first Comicon is popped within the 10 secs. time limit, and finally Ultron is pushed in the movies list.
+    1) "Ultron"
+    2) "Avengers" 
