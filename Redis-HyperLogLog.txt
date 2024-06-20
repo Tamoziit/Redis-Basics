@@ -1,0 +1,10 @@
+**REDIS-HYPERLOGLOg
+--> Probabilistic Data Structures used to count unique values. The values can be unique IP addresses, searching/surfing terms, users etc.
+
+--> pfadd <key> <value1> <value2> <value3>...<value_n> : Used to add "n" no. of values in a redis hyperlog. 
+eg: pfadd hll a b c d e f g
+--> pfcount <key> : Returns the no. of elements in a hyperlog.
+eg: pfcount hll --> from prev. eg returns 7
+NB: pfcount <key1> <key2> ... <key_n> : returns the count for "n" no. of hyperlogs
+--> pfmerge <dest_log> <key1> <key2>...<keyn> : To merge n hyperlogs into a single destination hyperlog.
+eg: pfmerge hll3 hll2 hll --> merges hll2 & hll inside hll3.
