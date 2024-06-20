@@ -1,0 +1,65 @@
+**REDIS-HASHES
+Hashmap dataset of Redis --> multiple uses in prod. DBs. --> Data stored as key-value pairs.
+
+--> hset <hashset> <key> <value> : Sets or stores values under a particular key in a hashset/hashmap.
+eg: hset hash name Tamsy
+    hset hash email tamojitdas181007@gmail.com
+    --> This is stored in the hashset as -->
+    1) "name" : "Tamsy"
+    2) "email" : "tamojitdas181007@gmail.com"
+--> hkeys <hashset> : Returns all the keys under a hashset.
+eg: hkeys hash gives -->
+    1) "name"
+    2) "email"
+--> hvals <hashset> : Returns all the values stored in a hashset.
+eg: hvals hash gives -->
+    1) "Tamsy"
+    2) "tamojitdas181007@gmail.com"
+--> hget <hashset> <key/field> : Returns the value stored in a field under a hashset.
+eg: hget hash name --> gives "tamsy" from prev. eg.
+--> hgetall <hashet> : Returns all the fields/keys along with their values from a hashset.
+eg: hgetall hash gives -->
+    1) "name"
+    2) "Tamsy"
+    3) "email"
+    4) "tamojitdas181007@gmail.com"
+--> hexists <hashset> <key> : Checks if a value for a particular key exists under a hashset or not --> If yes, returns 1, else returns 0.
+eg: hexists hash email --> return 1
+    hexists hash domain --> returns 0
+--> hlen <hashset> : Returns the length or no. of fields under a hashset.
+eg: hlen hash --> returns 2, acc. to prev. eg.
+--> hmset <hashset> <key1> <value1> <key2> <value2>...<key_n> <value_n> : Stores multiple key-value pairs in hashset.
+eg: hmset portfolio name "Tamojit Das" tech Full-Stack email dd@gmail.com age 20 phone 987654210
+    "portfolio" is stored in the DB as -->
+    1) "name" : "Tamojit Das"
+    2) "tech" : "Full-Stack"
+    3) "email" : "dd@gmail.com"
+    4) "age" : "20"
+    5) "phone" : "987654210"
+--> hmget <hashset> <key1> <key2> ... <key_n> : Returns the value of the multiple keys under a hashset as specified by the user.
+eg: hmget portfolio name tech email age phone
+--> hincrby <hashset> <key> <increment_val> : Increments the value of a particular key under a hashset by amt. = increment_val. 
+eg: hincrby portfolio age 1 --> increments age by 1.
+--> hincrbyfloat <hashset> <key> <increment_val> : Increments the value of a particular key under a hashset by a FLOATING amt. = increment_val.
+eg: hincrbyfloat portfolio age 1.5 --> increments age by 1.5
+    hincrbyfloat portfolio age -2.5 --> increments age by -2.5 --> ie, decrements age by  2.5.
+--> hdel <hashset> <key> : To remove a key value pair from a hashset.
+eg: hdel hash email --> removes email from hash.
+--> hstrlen <hashset> <key> : Returns the length of a string value of a particular key under a hashset.
+eg: hstrlen portfolio email --> returns 12.
+--> hsetnx <hashset> <key> <value> : Checks if a key already exists in a hashset --> If yes then returns 0 --> If not present, then add the key along with the value provided in the hashset.
+eg: hsetnx portfolio name Tammmooo --> returns 0 since name already exists under portfolio.
+    hsetnx portfolio hobby painting --> sets hobby : "painting", under portfolio, since hobby doesn't already exist under portfolio.
+    Therefore, final "portfolio" hashset will be -->
+    1) "name"
+    2) "Tamojit Das"
+    3) "tech"
+    4) "Full-Stack"
+    5) "email"
+    6) "dd@gmail.com"
+    7) "age"
+    8) "20"
+    9) "phone"
+    10) "987654210"
+    11) "hobby"
+    12) "painting"
