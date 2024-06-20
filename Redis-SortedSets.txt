@@ -1,0 +1,68 @@
+**REDIS SORTED SETS : Sets which are sorted according to scores(weights) provided by the user.
+
+--> zadd <key> <score> <value> : Stores a particular value of a specified score in a sorted set, sorted according to the score
+eg: zadd users 1 Tamsy 2 Alex 3 Steve 4 Roger
+    Stored in db as:
+    1) "Tamsy"
+    2) "Alex"
+    3) "Steve"
+    4) "Roger"; sorted wrt scores (here acts as indices) provided.
+--> zrange <key> <start> <stop> : Lists out the elements of the sorted set within a range.
+eg: zrange users 0 -1 --> returns the complete set.
+    zrange users 1 3 --> returns -->
+    1) "Alex"
+    2) "Steve"
+    3) "Roger"
+--> zrange <key> <start> <stop> withscores : Lists out the elements of the sorted set within a range, along with their scores.
+eg: zrange users 0 -1 withscores -->
+    1) "Tamsy"
+    2) "1"
+    3) "Alex"
+    4) "2"
+    5) "Steve"
+    6) "3"
+    7) "Roger"
+    8) "4"
+--> zcard <key> : Returns the length of the set.
+--> zcount <users> <start_range> <end_range> : Returns the total no. of elements falling within a particular range of scores.
+eg: zcount users -inf +inf --> returns all teh elements of the set, since the score always belongs to (-inf, +inf).
+    zcount users 0 3 --> returns all elements within the score-range [0, 3].
+--> zrem <key> <value> --> removes a paricular value from a key.
+eg: zrem users Alex
+--> zrevrange <key> <start> <stop> : Displays the set in reversed order (decreasing) wrt. their scores, within a range.
+--> zrevrange <key> <start> <stop> withscores : Same func. as prev., in addition to displaying scores.
+--> zscore <key> <value> : returns the score of a particular value in a sorted set.
+eg: zscore users Tamsy.
+--> zrevrangebyscore <key> <end_score> <start_score> : returns the reversed (decreasing) ordered elements of a set within a score range of [start_score, end_score].
+eg: for a sorted-set "techno" with scores -->
+    1) "php"
+    2) "10"
+    3) "javascript"
+    4) "15"
+    5) "node"
+    6) "20"
+    7) "react"
+    8) "30"
+    9) "python"
+    10) "50"
+    zrevrangebyscore techno 30 25 withscores --> gives -->
+    1) "react"
+    2) "30"  
+--> zincrby <key> <increment_value> <value> : Increments the score of a value in a set by amt. = increment_value.
+eg: zincrby techno 2 php --> increases the score of "php" from prev. set, from 10 to 10+2 --> 12
+--> zremrangebyscore <key> <min_score> <max_score> : removes all elements from a set with scores lying within the range [min_score, max_score].
+eg: zremrangebyscore techno 5 16 --> from prev. set removes php (score 12) & javascript (score 15). Hence current state of the sorted set will be --> 1) "node"
+            2) "react"
+            3) "python"
+--> zremrangebyrank <key> <start_index> <end_index> : removes all elements of the set in the range of index [start_index, end_index].
+eg: for an updated "users" set having -->
+    1) "Tamsy"
+    2) "Steve"
+    3) "Roger"
+    4) "Caesar"
+    5) "Casemiro"
+    6) "Ini"
+    zremrangebyrank users 0 2 --> removes 0th, 1th & 2th index elements --> i.e., tamsy, Steve & Roger to finally have -->
+    1) "Caesar"
+    2) "Casemiro"
+    3) "Ini"
