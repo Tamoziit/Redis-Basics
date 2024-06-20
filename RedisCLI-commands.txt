@@ -1,3 +1,4 @@
 **BASICS
 *Starting a redis server: redis-server (default port: 6379)
 *Opening Redis CLI : redis-cli
+*Clearing screen : clear

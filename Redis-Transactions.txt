@@ -1,0 +1,26 @@
+**REDIS TRANSACTIONS
+Helps in executing multiple set of commands in Redis.
+
+--> multi : Initiates transaction mode in redis. Multiple commands are pushed in queue, and are executed all at once after hitting execute cmd.
+--> exec : Executes all queued Redis commands.
+
+--> Transaction interface in redis-cli looks like -->
+127.0.0.1:6379> multi //setting up transaction mode
+OK
+127.0.0.1:6379> set name Happy //queing up cmds
+QUEUED
+127.0.0.1:6379> get name
+QUEUED
+127.0.0.1:6379> set a 1
+QUEUED
+127.0.0.1:6379> set b 2
+QUEUED
+127.0.0.1:6379> get b
+QUEUED
+127.0.0.1:6379> exec //executing the queued cmds
+1) OK
+2) "Happy"
+3) OK
+4) OK
+5) "2"
+--> discard : Discarding a transaction, i.e., discards all queued up commands.
