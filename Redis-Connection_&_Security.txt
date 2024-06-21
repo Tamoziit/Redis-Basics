@@ -1,0 +1,40 @@
+**REDIS CONNECTIONS & SECURITY
+
+--> ping : Command to check if connection has been established with Redis Server. If connection has been established then the server returns PONG in response.
+--> echo <text> : If connection has been established then the server returns back the text we pass with echo cmd, as response. 
+--> select <DB index> : Used to select/switch a database in Redis acc. to the index provided. By default DB at index 0 is used. If we execute select 3, the DB at index 3 will be used.
+NB: > Although there are multiple DBs in Redis, all data coming into them are stored in a single RDB/UF file in the system. If the Redis is configured as a cluster, then on DB[0] can be used.
+    > The keys & their corresponding values are unique & local to the DB in which they are defined. They are not accessible outside it.
+    eg:
+    127.0.0.1:6379[3]> select 0 //context currently in DB[3]
+    OK //switching context to DB[0]
+    127.0.0.1:6379> set name Messi
+    OK
+    127.0.0.1:6379> get name
+    "Messi"
+    127.0.0.1:6379> select 1 //switching context to DB[1]
+    OK
+    127.0.0.1:6379[1]> get name
+    (nil) //name not found since name has not yet been defined in DB[1]
+    127.0.0.1:6379[1]> set name Ronaldo
+    OK
+    127.0.0.1:6379[1]> get name
+    "Ronaldo" //name in DB[0] doesn't show in DB[1]
+    127.0.0.1:6379[1]> select 0 //switching back to DB[0]
+    OK
+    127.0.0.1:6379> get name
+    "Messi" //name in DB[1] doesn't show in DB[0]
+
+--> client list : Returns the details of the client connected to particular DB.
+eg:
+127.0.0.1:6379> client list //for DB[0]
+id=3 addr=127.0.0.1:51509 fd=9 name= age=7196 idle=0 flags=N db=0 sub=0 psub=0 multi=-1 qbuf=26 qbuf-free=32742 obl=0 oll=0 omem=0 events=r cmd=client
+127.0.0.1:6379> select 1
+OK
+127.0.0.1:6379[1]> client list //for DB[1]
+id=3 addr=127.0.0.1:51509 fd=9 name= age=7203 idle=0 flags=N db=1 sub=0 psub=0 multi=-1 qbuf=26 qbuf-free=32742 obl=0 oll=0 omem=0 events=r cmd=client
+
+--> client setname <name> : Setting the name of a client to a Redis DB. 
+--> client getname : returns the name of the client connected to the current DB.
+--> config set requirepass <password> : To set up a password for Redis DB. Once the password is set up, no command will be executed in any of the DBs until the user is authenticated.
+--> auth <password> : Authenticating a user with the set password.
