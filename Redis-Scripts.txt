@@ -1,2 +1,70 @@
 **REDIS SCRIPTS
+Lua Scripts to execute Redis operations using Redis Lua scripting (RLS) library functions. 
 
+--> eval "redis.call('<redis-func.>', KEYS[1], ARGV[1])
+" <numkeys> <key> <value> : Uses redis.call() func. to execute a particular redis function, like to write data in a key. Numkeys specifies the no. of arguments.
+eg: eval "redis.call('set', KEYS[1], ARGV[1])" 1 name Tamsy --> uses   'set' RLS library func. to set "Tamsy" inside key "name".
+    eval "redis.call('mset', KEYS[1], ARGV[1], KEYS[2], ARGV[2])" 2 name surname Tamojit Das --> uses mset func. to set "name" : "Tamojit", "surname" : "Das".
+
+#Consider a situation where:
+A hashset "country_cap" has:
+1) "India" : "New Delhi"
+2) "USA" : "Washington D.C."
+3) "Russia" : "Moscow"
+4) "Germany" : "Berlin"
+5) "Japan" : "Tokyo"
+6) "Italy" : "Rome"
+And a sorted set "country" has:
+1) "Italy"
+2) "India"
+3) "USA"
+We want to fetch the capitals (or values) of the countries in sorted set from their respective keys in the hashset.
+i.e., we want to fetch:
+1) "Rome"
+2) "New Delhi"
+3) "Washington D.C.", corresponding to the sorted set countries.
+
+This can be done by:
+127.0.0.1:6379> hmset country_cap India "New Delhi" USA "Washington D.C." Russia Moscow Germany Berlin Japan Tokyo Italy Rome
+OK
+127.0.0.1:6379> zadd country 1 Italy 2 India 3 USA
+(integer) 3
+127.0.0.1:6379> zrange country 0 -1
+1) "Italy"
+2) "India"
+3) "USA"
+127.0.0.1:6379> hvals country_cap
+1) "New Delhi"
+2) "Washington D.C."
+3) "Moscow"
+4) "Berlin"
+5) "Tokyo"
+6) "Rome"
+127.0.0.1:6379> eval "local order = redis.call('zrange', KEYS[1], 0, -1); return redis.call('hmget', KEYS[2], unpack(order));" 2 country country_cap //This script executes the operation.
+1) "Rome"
+2) "New Delhi"
+3) "Washington D.C."
+
+-->In this script:
+> 'zrange' fetches the full sorted set in [0, -1] range (default full set). It is stored in a local variable "order"
+> Then we return multiple values from hashset using 'hmget' & we use unpack() func. to map out the corresponding capitals in proper order as in sorted set, by passing the order variable.
+> We finally pass the sorted-set "country" and the hashset "country_cap" as arguments (so, numkeys = 2).
+
+--> script load <script> : Loading a script in a local hashed value.
+--> evalsha <hashed value> <numkeys> <arguments> : Execute a Lua script using its local hashed value.
+eg: The above sequence of scripts are executed as:
+
+127.0.0.1:6379> script load "local order = redis.call('zrange', KEYS[1], 0, -1); return redis.call('hmget', KEYS[2], unpack(order));"
+"1807412636f2f95da7f3cdf6cb3bb0249e2587c7" //hashed value
+127.0.0.1:6379> evalsha 1807412636f2f95da7f3cdf6cb3bb0249e2587c7 2 country country_cap
+1) "Rome"
+2) "New Delhi"
+3) "Washington D.C."
+
+--> script existts <hashed value> : checks if a particular hashed scripts exists in the local system or  not.
+--> script flush : Flushes out all stored scripts
+
+
+NB:
+--> Scripts shouldn't be too long --> This is because while scripts are executing, all other operations are being queued up or being stopped --> This, instead of improving performance can lead an application to become bottleneck & crash the system.
+--> Default timeout for sccripts after which it stops running = 5 secs.
