@@ -1,6 +1,8 @@
 **BASICS
 --> Starting a redis server: redis-server (default port: 6379)
 --> Opening Redis CLI : redis-cli
+--> Connecting redis to host:port : redis-cli -h <host> -p <port>
+    eg: redis-cli -h 127.0.0.1 -h 6379 --> connects redis server to 127.0.0.1:6379 address
 --> Clearing screen : clear
 --> keys * --> to get all the keys in a db
 --> flushall --> remove all the keys in redis db

@@ -1,0 +1,3 @@
+**REDIS BENCHMARKS
+In-built Redis functionality to analyse how Redis will function in our application when implemented in a server, single-node, cluster etc. It is very useful in micro-optimizing our service &  checking if there is a need for implementing a new cluster or node, in order to prevent the application from turning into a bottleneck.
+
