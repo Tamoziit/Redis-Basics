@@ -24,3 +24,5 @@ QUEUED
 4) OK
 5) "2"
 --> discard : Discarding a transaction, i.e., discards all queued up commands.
+
+NB: Redis transactions Runs in atomic way, i.e, No other commands can run while they are being executed.
