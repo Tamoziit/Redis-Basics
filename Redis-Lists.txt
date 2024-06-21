@@ -1,8 +1,5 @@
-NB:
-keys * --> to get all the keys in a db
-flushall --> remove all the keys in redis db
-
 **REDIS LISTS
+
 --> pushing a data into a list from top --> lpush <key> <value>
 eg: lpush country India
     lpush country USA

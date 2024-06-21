@@ -1,4 +1,6 @@
 **BASICS
-*Starting a redis server: redis-server (default port: 6379)
-*Opening Redis CLI : redis-cli
-*Clearing screen : clear
+--> Starting a redis server: redis-server (default port: 6379)
+--> Opening Redis CLI : redis-cli
+--> Clearing screen : clear
+--> keys * --> to get all the keys in a db
+--> flushall --> remove all the keys in redis db
