@@ -35,6 +35,7 @@ OK
 id=3 addr=127.0.0.1:51509 fd=9 name= age=7203 idle=0 flags=N db=1 sub=0 psub=0 multi=-1 qbuf=26 qbuf-free=32742 obl=0 oll=0 omem=0 events=r cmd=client
 
 --> client setname <name> : Setting the name of a client to a Redis DB. 
---> client getname : returns the name of the client connected to the current DB.
+--> client getname : Returns the name of the client connected to the current DB.
+--> client kill id <id> : Kills or terminates the client with a particular id (specified by the user), which is connected to a Redis DB. However it doesn't kill the active client over which the command is executed (ie, the current working client).
 --> config set requirepass <password> : To set up a password for Redis DB. Once the password is set up, no command will be executed in any of the DBs until the user is authenticated.
 --> auth <password> : Authenticating a user with the set password.
