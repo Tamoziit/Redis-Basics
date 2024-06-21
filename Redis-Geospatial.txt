@@ -1,0 +1,77 @@
+**REDIS GEOSPATIAL
+Storing geospatial info, in form of latitudes & longitudes (x, y). Redis stores all these data in a sorted set. It generates a 32-bit hashed value (geohash) which is unique to a particular place & data is stored wrt. their locations.
+
+NB: To implement Geospatial model --> The earth has been modelized as a sphere, & hence is bound to produce an error of about 0.5% wrt. locations, while storing the data.
+
+--> GEOADD <key> <lat1> <lon1> <value1> <lat2> <lon2> <value2> ... <lat_n> <lon_n> <value_n> : Stores Geospatial info (latitudes & longitudes) of n no. of values.
+eg:
+127.0.0.1:6379> GEOADD maps 72.585022 23.033863  Ahmedabad 72.877426 19.076090 Mumbai 77.580643 12.972442 Bangalore
+(integer) 3
+127.0.0.1:6379> zrange maps 0 -1 //Since values are stored in a sorted set, they can be obtained using zrange cmd
+1) "Bangalore"
+2) "Mumbai"
+3) "Ahmedabad"
+--> GEOHASH <key> <value> : Returns the GeoHash value generated during storing data as geospatial data in a sorted set. This geohash value gives the location (with about 0.5% error) of that place on an actual map.
+eg: GEOHASH maps Ahmedabad --> returns "ts5e59nvcx0"
+--> GEOPOS <key> <value> : Returns the latitude & longitude of an entry of a geospatial sorted set.
+eg:
+127.0.0.1:6379> GEOPOS maps Mumbai
+1) 1) "72.87742406129837036"
+   2) "19.07608965708350723"
+--> GEODIST <key> <value1> <value2> : Returns the distance (in m) between 2 values/places stored in geospatial data set. This distance is the actual geographical st. line distance b/w the two points on a map & not the official/trade route dist. b/w them.
+eg: GEODIST maps Mumbai Ahmedabad --> returns "441253.1137" in metres, ie. about 441 km.
+NB: > GEODIST maps Mumbai Pune km/mi --> returns dist b/w Mumbai & Pune in km/mi --> "120.3876"/"74.8056"
+    > zrange maps 0 -1 withscores --> gives -->
+    1) "Bangalore" // places closer to the equator (0 degree lat.) have lower scored
+    2) "3574463072686145"
+    3) "Mumbai"
+    4) "3577460555680704"
+    5) "Pune"
+    6) "3578210660920031"
+    7) "Ahmedabad" // places away from the equator (0 degree lat.) have higher scored
+    8) "3625005789852896"
+
+--> GEORADIUS <key> <lat> <lon> <dist> <km|m|ft|mi> : Returns all the places stored in the sorted-set lying within the radius of distance (dist) in km/m/ft/miles, as specified by the user from a reference point --> ie, (lat, lon) given by user.
+eg:
+127.0.0.1:6379> GEORADIUS maps 72.585022 23.033863 500 km
+1) "Ahmedabad"
+2) "Mumbai"
+127.0.0.1:6379> GEORADIUS maps 72.585022 23.033863 1500 km
+1) "Ahmedabad" //nearest
+2) "Bangalore"
+3) "Mumbai"
+4) "Pune" //farthest
+NB: To get this list along with the coords, distance from ref. pt., & the 32 bit hash score with  they are stored in the sorted-set we use -->
+127.0.0.1:6379> GEORADIUS maps 72.585022 23.033863 1500 km withcoord withdist withhash //these arguments need not be used all at once & can be used singly as well.
+1) 1) "Ahmedabad"
+   2) "0.0002" //dist in km
+   3) (integer) 3625005789852896 //hash score
+   4) 1) "72.58502036333084106" //longitude
+      2) "23.0338641085831668" //latitude
+2) 1) "Bangalore"
+   2) "1237.1978"
+   3) (integer) 3574463072686145
+   4) 1) "77.58064538240432739"
+      2) "12.97244308457791817"
+3) 1) "Mumbai"
+   2) "441.2530"
+   3) (integer) 3577460555680704
+   4) 1) "72.87742406129837036"
+      2) "19.07608965708350723"
+4) 1) "Pune"
+   2) "519.5136"
+   3) (integer) 3578210660920031
+   4) 1) "73.85625332593917847"
+      2) "18.51672485691942427"
+
+--> GEORADIUSBYMEMBER <key> <value> <dist> <km|m|ft|mi> : Returns all the places stored in the sorted-set lying within the radius of distance (dist) in km/m/ft/miles, as specified by the user from a reference point --> ie, the member/value given by the user, which is already stored in the set.
+eg:
+127.0.0.1:6379> GEORADIUSBYMEMBER maps Ahmedabad 800 km
+1) "Ahmedabad" //nearest
+2) "Mumbai"
+3) "Pune" //farthest
+NB: By default the order returned is ascending --> to change the order we use arguments --> desc
+127.0.0.1:6379> GEORADIUSBYMEMBER maps Ahmedabad 800 km desc
+1) "Pune" //farthest
+2) "Mumbai"
+3) "Ahmedabad" //nearest
