@@ -1,0 +1,108 @@
+**REDIS PUBSUB
+
+--> subscribe <publisher_channel> : To subscribe a client to a publisher. A client can be subscribed to a publisher channel irrespective of it has been created or not (i.e., a publisher channel can be created after clients have already subscribed to it).
+eg: subscribe news --> subscribes a client to a publisher channel named "news".
+--> publish <channel_name> <message> : Publishing a channel along with a message. This message will be relayed to all those clients subscribed to the publisher.
+eg: publish news "Hello World" --> publishes a channel with name "news" & relays "Hello World" to the subscribers.
+
+#Publisher Interface:
+127.0.0.1:6379> publish news "Hello World" //publishing
+(integer) 2 //No. of subscribers
+127.0.0.1:6379> publish news "Open Source"
+(integer) 2
+
+#Subscriber Interface
+127.0.0.1:6379> subscribe news //subscribing
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "news"
+3) (integer) 1 //No. of channels the client has been subscribed to
+1) "message" //message from publisher
+2) "news" //publisher channel name
+3) "Hello World" //message content
+1) "message"
+2) "news"
+3) "Open Source"
+
+-->psubscribe <pattern_channel_names> : Subscribing to channels that according to a particular channel name.
+eg: psubscribe news* h?llo b[ai]ll -->
+    > news* signifies subscribing to channels starting with news, succeeded by any set of character like news1, newsa, news_state etc.
+    > h?llo signifies subscribing to channels like hello, hallo, hJllo, ie, '?' can be replaced by an single character.
+    > b[ai]ll signifies subscribing to either bill or ball (ie, choice b/w 'a' or 'i').
+
+    #Demo Publisher Interface
+    127.0.0.1:6379> publish news "StackOverflow"
+    (integer) 2
+    127.0.0.1:6379> publish news1 "Listening to news1"
+    (integer) 1
+    127.0.0.1:6379> publish newsa "Listening to newsa"
+    (integer) 1
+    127.0.0.1:6379> publish hello "Listening to hello"
+    (integer) 1
+    127.0.0.1:6379> publish hallo "Listening to hallo"
+    (integer) 1
+    127.0.0.1:6379> publish ball "Listening to ball"
+    (integer) 1
+    127.0.0.1:6379> publish ball "Listening to bill"
+    (integer) 1
+    127.0.0.1:6379> publish bill "Listening to bill"
+    (integer) 1
+    127.0.0.1:6379> publish boll "Listening to boll"
+    (integer) 0 //no subscriber since there is no option for 'o' in [ai]
+    127.0.0.1:6379> publish news_state "Listening to news_state"
+    (integer) 1
+
+    #Demo Subscriber Interface, subscribed to pattern subscriptions
+    127.0.0.1:6379> psubscribe news* h?llo b[ai]ll
+    Reading messages... (press Ctrl-C to quit)
+    1) "psubscribe"
+    2) "news*"
+    3) (integer) 1
+    1) "psubscribe"
+    2) "h?llo"
+    3) (integer) 2
+    1) "psubscribe"
+    2) "b[ai]ll"
+    3) (integer) 3
+    1) "pmessage"
+    2) "news*"
+    3) "news"
+    4) "StackOverflow"
+    1) "pmessage"
+    2) "news*"
+    3) "news1"
+    4) "Listening to news1"
+    1) "pmessage"
+    2) "news*"
+    3) "newsa"
+    4) "Listening to newsa"
+    1) "pmessage"
+    2) "h?llo"
+    3) "hello"
+    4) "Listening to hello"
+    1) "pmessage"
+    2) "h?llo"
+    3) "hallo"
+    4) "Listening to hallo"
+    1) "pmessage"
+    2) "b[ai]ll"
+    3) "ball"
+    4) "Listening to ball"
+    1) "pmessage"
+    2) "b[ai]ll"
+    3) "ball"
+    4) "Listening to bill"
+    1) "pmessage"
+    2) "b[ai]ll"
+    3) "bill"
+    4) "Listening to bill"
+    1) "pmessage"
+    2) "news*"
+    3) "news_state"
+    4) "Listening to news_state"
+
+--> pubsub channels : Returns the channels which have not been subscribed as per pattern subscriptions.
+from above examples, those channels are : 1) "news"
+                                          2) "broadcast"
+--> pubsub numsub <channel_name> : Returns the no. of subscribers to a non-pattern based channel.
+--> pubsub numpat : Returns the no. of existing pattern based channels (from above eg: 3 --> news*, h?llo, b[ai]ll)
