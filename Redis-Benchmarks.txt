@@ -1,3 +1,34 @@
 **REDIS BENCHMARKS
 In-built Redis functionality to analyse how Redis will function in our application when implemented in a server, single-node, cluster etc. It is very useful in micro-optimizing our service &  checking if there is a need for implementing a new cluster or node, in order to prevent the application from turning into a bottleneck.
 
+(NB: These benchmark commands are executed in the system cmd & not on redis-server/redis-cli)
+--> redis-benchmark -n <no. of requests> : Test runs different redis commands for a specified no. of times (no. of requests) in order to health check the redis-server.
+eg: redis-benchmark -n 1000 --> runs different cmds 1000 times to check the health & return the results --> some of which look are illustrated as -->
+====== SET ====== //runs 1000 set commands
+  1000 requests completed in 0.02 seconds 
+  50 parallel clients //1000  cmds ran on 50 parallel clients
+  3 bytes payload // 3 byte memory payload was set (default test payload size)
+  keep alive: 1
+
+89.00% <= 1 milliseconds
+99.80% <= 2 milliseconds
+100.00% <= 2 milliseconds //full 1000 secs executed in 2 millisecs
+55555.56 requests per second
+
+====== GET ====== //runs 1000 get cmds
+  1000 requests completed in 0.02 seconds
+  50 parallel clients
+  3 bytes payload
+  keep alive: 1
+
+74.30% <= 1 milliseconds
+99.30% <= 2 milliseconds
+100.00% <= 2 milliseconds
+47619.05 requests per second
+--> More such cmds like lpush, incr, lpop, sadd, hset etc. are also tested.
+
+--> redis-benchmark -n <no. of request> -d <data_payload_size> : Tests the redis-server with the specified no. of requests on different commands passing a user-specified data payload size.
+eg: redis-benchmark -n 1000 -d 100000000 --> runs 1000 requests on 100kB data payload.
+
+--> redis-benchmark -n <no. of request> -d <data_payload_size> -c <no. of parallel clients> : Tests the redis-server with the specified no. of requests on different commands passing a user-specified data payload size, which runs on a user-specified no. of parallel clients
+eg: redis-benchmark -n 1000 -d 100000000 -c 200 --> runs 1000 requests on 100kB data payload on 200 paralle clients.
