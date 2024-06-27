@@ -1,0 +1,14 @@
+**REDIS STREAMS
+A Redis Stream is a data structure that acts like an append-only log (similar to Kafka), but also implements several operations to overcome some of the limits of a typical append-only log.
+These includes random access in O(1) time and complex consumption startegies (consumer groups). --> Basically used to track faced paced operations of the application
+eg: > Event sourcing (eg: tracking user options, clicks, etc.)
+    > Sensor monitoring (eg: readings from devices in the field)
+    > Notifications etc.
+
+--> XADD <key> <value> : Adds a data to a Redis-stream. It returns a timestamp when the value to the key was added.
+eg: 
+127.0.0.1:6379> XADD temperatures:us-ny:10007 * temp_f 87.2       pressure 29.69 humidity 46
+"1719487819250-0" //timestamp
+--> This command creates a collection "temperatures" --> under which it has a STREAM for entry "us-ny" with id 10007 --> The Stream in turn has keys: temp_f, pressure, hummidity.
+
+Other Commands., with similar func. as their asymptotes (corresponding cmds of other data types) --> XRANGE, XLEN, XREAD etc. [ref: documentation]

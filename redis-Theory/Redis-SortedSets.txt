@@ -1,4 +1,4 @@
-**REDIS SORTED SETS : Sets which are sorted according to scores(weights) provided by the user.
+**REDIS SORTED SETS : Sets which are sorted according to scores(weights) provided by the user. (Priority Queue)
 
 --> zadd <key> <score> <value> : Stores a particular value of a specified score in a sorted set, sorted according to the score
 eg: zadd users 1 Tamsy 2 Alex 3 Steve 4 Roger

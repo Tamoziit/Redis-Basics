@@ -1,4 +1,4 @@
-**REDIS-SETS : Similar to lists but holds only unique values unlike lists.
+**REDIS-SETS : Similar to lists but holds only unique values unlike lists. (Can be used as a Stack or Queue)
 
 --> sadd <key> <value> --> adds a value to a set.
 eg: sadd tech Java
