@@ -6,3 +6,4 @@
 --> Clearing screen : clear
 --> keys * --> to get all the keys in a db
 --> flushall --> remove all the keys in redis db
+--> docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest --> running Redis in a docker container using redis-stack.

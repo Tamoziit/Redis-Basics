@@ -28,3 +28,8 @@ eg: incr count --> gives back 2 (from prev. eg.)
 NB: By default expiry time of a key is -1.
 NB: setex b 10 abc --> setex cmd sets key "b" with value "abc" for 10 secs, after whicch it will cease to exist.
 --> Checking time until expire of a key : ttl <key>
+
+#Best Practices
+set <key>:<id> <value> --> sets a value to a key with a particular id. This type of data setting groups up data & helps in production-grade code.
+
+set <key>:<id> <value> nx --> setting value to a key at id, IFF value at that id of the id doesn't already exist.
