@@ -5,11 +5,13 @@
   "main": "client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon stream.js"
+    "start": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.2",
+    "express": "^4.19.2",
     "ioredis": "^5.4.1"
   },
   "devDependencies": {
